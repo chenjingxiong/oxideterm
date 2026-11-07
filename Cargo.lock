@@ -275,6 +275,7 @@ dependencies = [
  "unicode-width",
  "vte",
  "windows-sys 0.59.0",
+ "zeroize",
 ]
 
 [[package]]
@@ -7226,6 +7227,8 @@ version = "2.3.1"
 dependencies = [
  "base64 0.22.1",
  "chrono",
+ "libc",
+ "mach2 0.5.0",
  "serde",
  "serde_json",
  "tokio",
@@ -8293,6 +8296,7 @@ name = "oxideterm-tmux"
 version = "2.3.1"
 dependencies = [
  "memchr",
+ "zeroize",
 ]
 
 [[package]]
