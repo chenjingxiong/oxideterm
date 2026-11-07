@@ -150,13 +150,12 @@ async fn run_sign(
     }
     command
         .arg("--stdio")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .kill_on_drop(true);
     #[cfg(windows)]
     command.creation_flags(0x08000000);
-    let mut child = command.spawn().map_err(|_| SecurityKeyError::Unavailable)?;
+    let mut child = oxideterm_process_pipes::spawn(&mut command, true, true, false)
+        .map_err(|_| SecurityKeyError::Unavailable)?;
     let result = tokio::select! {
         _ = cancel.cancelled() => Err(SecurityKeyError::Cancelled),
         _ = provider.shutdown.cancelled() => Err(SecurityKeyError::Cancelled),

@@ -67,10 +67,8 @@ async fn run_local_command_capture(
     let mut process = local_shell_command(line);
     process
         .stdin(std::process::Stdio::null())
-        .stdout(std::process::Stdio::piped())
-        .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
-    let child = process.spawn().map_err(|_| ())?;
+    let child = oxideterm_process_pipes::spawn(&mut process, false, true, true).map_err(|_| ())?;
     // Dropping the capture future is a cancellation, not a timeout: `kill_on_drop`
     // only ends the shell, so the guard ends the tree the same way the timeout
     // path does.
@@ -279,7 +277,7 @@ fn local_shell_command(line: &str) -> tokio::process::Command {
 /// Windows children join a kill-on-close job while suspended. Unix captures
 /// own a process group. Neither cleanup path relies on a surviving parent shell.
 struct LocalCaptureChild {
-    child: tokio::process::Child,
+    child: oxideterm_process_pipes::PipedChild,
     #[cfg(windows)]
     job: windows::CaptureJob,
     /// Cleared once the capture ends normally, so a finished child is not
@@ -288,7 +286,7 @@ struct LocalCaptureChild {
 }
 
 impl LocalCaptureChild {
-    fn new(child: tokio::process::Child) -> Result<Self, ()> {
+    fn new(child: oxideterm_process_pipes::PipedChild) -> Result<Self, ()> {
         #[cfg(windows)]
         let job = windows::CaptureJob::attach_and_resume(child.id().ok_or(())?).map_err(|_| ())?;
         Ok(Self {

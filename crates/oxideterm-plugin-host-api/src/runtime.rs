@@ -12,7 +12,6 @@ use std::{
     future::Future,
     path::{Path, PathBuf},
     pin::Pin,
-    process::Stdio,
     sync::Arc,
     time::{Duration, Instant},
 };
@@ -20,7 +19,6 @@ use std::{
 use serde_json::Value;
 use tokio::{
     io::{AsyncBufReadExt, AsyncWriteExt, BufReader},
-    process::{Child, ChildStdin},
     time,
 };
 use zeroize::Zeroizing;

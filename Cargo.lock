@@ -7018,6 +7018,7 @@ dependencies = [
  "oxideterm-atomic-file",
  "oxideterm-network-proxy",
  "oxideterm-portable-runtime",
+ "oxideterm-process-pipes",
  "oxideterm-secret-store",
  "parking_lot",
  "rand 0.8.6",
@@ -7431,6 +7432,7 @@ dependencies = [
  "oxideterm-plugin-registry",
  "oxideterm-portable-runtime",
  "oxideterm-preview",
+ "oxideterm-process-pipes",
  "oxideterm-public-mcp",
  "oxideterm-quick-commands",
  "oxideterm-remote-desktop",
@@ -7772,6 +7774,7 @@ name = "oxideterm-mosh"
 version = "2.3.1"
 dependencies = [
  "base64 0.22.1",
+ "oxideterm-process-pipes",
  "oxideterm-ssh",
  "serde",
  "serde_json",
@@ -7824,6 +7827,7 @@ dependencies = [
  "oxideterm-plugin-protocol",
  "oxideterm-plugin-registry",
  "oxideterm-plugin-wasm-runtime",
+ "oxideterm-process-pipes",
  "oxideterm-settings",
  "oxideterm-sftp",
  "oxideterm-ssh",
@@ -7931,6 +7935,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "oxideterm-process-pipes"
+version = "2.3.0"
+dependencies = [
+ "tokio",
+]
+
+[[package]]
 name = "oxideterm-public-mcp"
 version = "2.3.1"
 dependencies = [
@@ -8009,6 +8020,7 @@ dependencies = [
 name = "oxideterm-security-key"
 version = "2.3.1"
 dependencies = [
+ "oxideterm-process-pipes",
  "serde",
  "serde_json",
  "tokio",

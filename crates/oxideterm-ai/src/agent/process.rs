@@ -1,9 +1,9 @@
-use std::{io, process::Stdio};
+use std::io;
 use tokio::io::AsyncReadExt;
 
 /// The task owns this process tree; shared terminal shells never enter this type.
 pub struct AgentProcess {
-    child: tokio::process::Child,
+    child: oxideterm_process_pipes::PipedChild,
     record: Option<super::AgentResourceRecord>,
     #[cfg(unix)]
     group: i32,
@@ -15,14 +15,12 @@ impl AgentProcess {
     pub fn spawn(command: &mut tokio::process::Command) -> io::Result<Self> {
         command
             .kill_on_drop(true)
-            .stdin(Stdio::null())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped());
+            .stdin(std::process::Stdio::null());
         #[cfg(unix)]
         command.process_group(0);
         #[cfg(windows)]
         command.creation_flags(0x08000000 | 0x00000004);
-        let child = command.spawn()?;
+        let mut child = oxideterm_process_pipes::spawn(command, false, true, true)?;
         let pid = child
             .id()
             .ok_or_else(|| io::Error::other("Child process has no identity"))?;

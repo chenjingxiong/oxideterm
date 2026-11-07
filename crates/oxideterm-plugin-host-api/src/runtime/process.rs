@@ -17,8 +17,8 @@ pub struct NativeProcessPluginRuntime {
     entry: String,
     pub(super) supervisor: PluginRuntimeSupervisorState,
     pub(super) generation: u64,
-    pub(super) child: Option<Child>,
-    stdin: Option<ChildStdin>,
+    pub(super) child: Option<oxideterm_process_pipes::PipedChild>,
+    stdin: Option<oxideterm_process_pipes::ProcessStdin>,
     output: Option<mpsc::Receiver<Result<Zeroizing<String>, PluginError>>>,
     output_reader: Option<tokio::task::JoinHandle<()>>,
     stderr_reader: Option<tokio::task::JoinHandle<()>>,
@@ -102,24 +102,20 @@ impl NativeProcessPluginRuntime {
             // workspace stdio, because plugin logs/results must be captured and
             // classified by the runtime bridge instead of leaking to the app.
             let mut command = tokio::process::Command::new(executable);
-            command
-                .current_dir(&self.plugin_dir)
-                .stdin(Stdio::piped())
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped())
-                .kill_on_drop(true);
+            command.current_dir(&self.plugin_dir).kill_on_drop(true);
             #[cfg(windows)]
             {
                 // Windows GUI launches must not flash a console window for
                 // process-backed plugins; stdio remains captured via pipes.
                 command.creation_flags(CREATE_NO_WINDOW);
             }
-            let mut child = command.spawn().map_err(|error| {
-                PluginError::runtime(
-                    "process_spawn_failed",
-                    format!("Cannot start native plugin process: {error}"),
-                )
-            })?;
+            let mut child = oxideterm_process_pipes::spawn(&mut command, true, true, true)
+                .map_err(|error| {
+                    PluginError::runtime(
+                        "process_spawn_failed",
+                        format!("Cannot start native plugin process: {error}"),
+                    )
+                })?;
             let stdin = child.stdin.take().ok_or_else(|| {
                 PluginError::runtime(
                     "process_stdin_unavailable",

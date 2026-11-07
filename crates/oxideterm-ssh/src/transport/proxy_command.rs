@@ -73,13 +73,11 @@ pub(super) async fn dial_proxy_command(
     let mut command = tokio::process::Command::new(program.as_str());
     command
         .args(args.iter().map(|argument| argument.as_str()))
-        .stdin(std::process::Stdio::piped())
-        .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::null())
         .kill_on_drop(true);
     #[cfg(windows)]
     command.creation_flags(PROXY_COMMAND_CREATE_NO_WINDOW);
-    let mut child = command.spawn().map_err(|_| {
+    let mut child = oxideterm_process_pipes::spawn(&mut command, true, true, false).map_err(|_| {
         // Never include the executable, arguments, or child stderr in an error because
         // ProxyCommand values may contain credentials supplied by external tooling.
         SshTransportError::ConnectionFailed("failed to start SSH ProxyCommand".to_string())
@@ -120,9 +118,9 @@ fn validate_direct_command(
 }
 
 fn spawn_proxy_command_worker(
-    mut child: tokio::process::Child,
-    mut child_stdin: tokio::process::ChildStdin,
-    mut child_stdout: tokio::process::ChildStdout,
+    mut child: oxideterm_process_pipes::PipedChild,
+    mut child_stdin: oxideterm_process_pipes::ProcessStdin,
+    mut child_stdout: oxideterm_process_pipes::ProcessStdout,
     worker_stream: tokio::io::DuplexStream,
     mut shutdown: tokio::sync::oneshot::Receiver<()>,
 ) -> tokio::task::JoinHandle<()> {

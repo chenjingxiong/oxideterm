@@ -123,10 +123,7 @@ impl McpProcessRegistry {
         configure_mcp_stdio_command(&mut cmd);
         cmd.args(args)
             .env_clear()
-            .envs(env)
-            .stdin(std::process::Stdio::piped())
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped());
+            .envs(env);
         if let Ok(path) = std::env::var("PATH") {
             cmd.env("PATH", path);
         }
@@ -134,7 +131,7 @@ impl McpProcessRegistry {
             cmd.env("HOME", home);
         }
 
-        let mut child = cmd.spawn().map_err(|error| {
+        let mut child = oxideterm_process_pipes::spawn(&mut cmd, true, true, true).map_err(|error| {
             McpError::Message(format!("Failed to spawn MCP server '{command}': {error}"))
         })?;
         let stdin = child

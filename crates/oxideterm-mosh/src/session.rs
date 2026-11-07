@@ -248,13 +248,12 @@ pub async fn start_mosh_session(
     let mut command = Command::new(&config.executable);
     command
         .arg("--stdio")
-        .stdin(std::process::Stdio::piped())
-        .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::null())
         .kill_on_drop(true);
     #[cfg(windows)]
     command.creation_flags(0x08000000);
-    let mut child = command.spawn().map_err(|_| MoshSessionStartError::Launch)?;
+    let mut child = oxideterm_process_pipes::spawn(&mut command, true, true, false)
+        .map_err(|_| MoshSessionStartError::Launch)?;
     let mut stdin = child.stdin.take().ok_or(MoshSessionStartError::Launch)?;
     let mut stdout = child.stdout.take().ok_or(MoshSessionStartError::Launch)?;
     let start = Request::Start {

@@ -8,6 +8,7 @@ publish.workspace = true
 [dependencies]
 base64.workspace = true
 oxideterm-ssh = { path = "../oxideterm-ssh" }
+oxideterm-process-pipes = { path = "../oxideterm-process-pipes" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

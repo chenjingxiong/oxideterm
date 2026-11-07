@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tokio::{
     io::{AsyncBufRead, AsyncBufReadExt, AsyncWrite, AsyncWriteExt, BufReader},
-    process::{Child, Command},
+    process::Command,
     sync::{Mutex, broadcast, oneshot},
     task::JoinHandle,
 };
@@ -257,8 +257,8 @@ impl McpError {
 }
 
 struct McpProcess {
-    child: Mutex<Child>,
-    stdin: Mutex<tokio::process::ChildStdin>,
+    child: Mutex<oxideterm_process_pipes::PipedChild>,
+    stdin: Mutex<oxideterm_process_pipes::ProcessStdin>,
     next_id: AtomicU64,
     pending: PendingMap,
     notifications: broadcast::Sender<Value>,

@@ -27,6 +27,7 @@ oxideterm-plugin-manifest = { path = "../oxideterm-plugin-manifest" }
 oxideterm-plugin-protocol = { path = "../oxideterm-plugin-protocol" }
 oxideterm-plugin-registry = { path = "../oxideterm-plugin-registry" }
 oxideterm-plugin-wasm-runtime = { path = "../oxideterm-plugin-wasm-runtime", optional = true }
+oxideterm-process-pipes = { path = "../oxideterm-process-pipes" }
 oxideterm-settings = { path = "../oxideterm-settings" }
 oxideterm-sftp = { path = "../oxideterm-sftp" }
 oxideterm-ssh = { path = "../oxideterm-ssh" }
