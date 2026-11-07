@@ -7936,7 +7936,7 @@ dependencies = [
 
 [[package]]
 name = "oxideterm-process-pipes"
-version = "2.3.0"
+version = "2.3.1"
 dependencies = [
  "tokio",
 ]
@@ -8130,6 +8130,7 @@ dependencies = [
  "oxideterm-connections",
  "oxideterm-network-proxy",
  "oxideterm-portable-runtime",
+ "oxideterm-process-pipes",
  "oxideterm-security-key",
  "oxideterm-sftp",
  "oxideterm-topology",
